@@ -1,9 +1,7 @@
 import requests
 from . import constants
 from dagster import asset
-import duckdb
-import os
-from dagster.utils.backoff import backoff
+from dagster_duckdb import DuckDBResource
 
 @asset
 def taxi_trips_file() -> None:
@@ -33,7 +31,7 @@ def taxi_zone_file() -> None:
 @asset(
     deps=["taxi_trips_file"]
 )
-def taxi_trips() -> None:
+def taxi_trips(database: DuckDBResource) -> None:
     """
       The raw taxi trips dataset, loaded into a DuckDB database
     """
@@ -54,20 +52,13 @@ def taxi_trips() -> None:
         );
     """
 
-    conn = backoff(
-        fn=duckdb.connect,
-        retry_on=(RuntimeError, duckdb.IOException),
-        kwargs={
-            "database": os.getenv("DUCKDB_DATABASE"),
-        },
-        max_retries=10,
-    )
-    conn.execute(query)
+    with database.get_connection() as conn:
+        conn.execute(query)
 
 @asset(
     deps=["taxi_zone_file"]
 )
-def taxi_zones() -> None:
+def taxi_zones(database: DuckDBResource) -> None:
     """
       The raw taxi zones dataset, loaded into a DuckDB database
     """
@@ -82,12 +73,5 @@ def taxi_zones() -> None:
         );
     """
 
-    conn = backoff(
-        fn=duckdb.connect,
-        retry_on=(RuntimeError, duckdb.IOException),
-        kwargs={
-            "database": os.getenv("DUCKDB_DATABASE"),
-        },
-        max_retries=10,
-    )
-    conn.execute(query)
+    with database.get_connection() as conn:
+        conn.execute(query)

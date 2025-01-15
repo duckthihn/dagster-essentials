@@ -1,0 +1,2 @@
+[32m2025-01-13 20:41:01 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 5c2c782a-b64b-485f-bf7d-2b3a679509a0 - 4504 - LOGS_CAPTURED - Started capturing logs in process (pid: 4504).
+[32m2025-01-13 20:41:01 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 5c2c782a-b64b-485f-bf7d-2b3a679509a0 - 4504 - taxi_zone_file - STEP_START - Started execution of step "taxi_zone_file".
